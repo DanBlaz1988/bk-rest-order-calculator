@@ -1,318 +1,181 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BK Rest Order Calculator</title>
-  <style>
-    :root{
-      --bg:#0b1220;
-      --card:#111a2d;
-      --muted:#7f8aa5;
-      --line:#23304b;
-      --ink:#e8eefc;
-      --pill:#0e1730;
-      --accent:#65e6a7;
-      --accent2:#2dd4bf;
-    }
-    html,body{height:100%}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:radial-gradient(1200px 600px at 20% 10%, #15234a 0%, var(--bg) 50%, #070b14 100%);
-      color:var(--ink);
-    }
-    .wrap{max-width:1100px;margin:0 auto;padding:22px 14px 40px}
-    h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px}
-    .sub{margin:0 0 16px;color:var(--muted)}
-    .top{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
-      background:rgba(17,26,45,.72); border:1px solid var(--line);
-      padding:12px; border-radius:14px; backdrop-filter: blur(8px);
-    }
-    .field{display:flex; flex-direction:column; gap:6px}
-    .field label{font-size:12px;color:var(--muted)}
-    input[type="number"]{
-      width:160px; max-width:100%;
-      background:var(--pill); color:var(--ink);
-      border:1px solid var(--line);
-      border-radius:10px; padding:10px 12px;
-      outline:none;
-    }
-    input[type="number"]:focus{border-color:#3a4f7a; box-shadow:0 0 0 3px rgba(45,212,191,.15)}
-    .btns{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
-    button{
-      background:transparent; color:var(--ink);
-      border:1px solid var(--line);
-      border-radius:10px; padding:10px 12px;
-      cursor:pointer;
-    }
-    button:hover{border-color:#3a4f7a}
-    button.primary{background:linear-gradient(90deg, rgba(101,230,167,.18), rgba(45,212,191,.18)); border-color:rgba(45,212,191,.45)}
-    .tableWrap{
-      margin-top:14px;
-      background:rgba(17,26,45,.72);
-      border:1px solid var(--line);
-      border-radius:14px;
-      overflow:hidden;
-    }
-    table{width:100%; border-collapse:collapse}
-    thead th{
-      text-align:left; font-size:12px; color:#b8c4df;
-      background:rgba(10,16,28,.65);
-      padding:10px 10px;
-      border-bottom:1px solid var(--line);
-      white-space:nowrap;
-    }
-    tbody td{
-      padding:10px 10px;
-      border-bottom:1px solid rgba(35,48,75,.6);
-      vertical-align:middle;
-    }
-    tbody tr:last-child td{border-bottom:none}
-    .nr{width:56px;color:#c9d4ef}
-    .item{min-width:210px}
-    .pack{width:110px}
-    .cellIn input{width:120px}
-    .readonly{
-      background:rgba(101,230,167,.12);
-      border:1px solid rgba(101,230,167,.35);
-      border-radius:10px;
-      padding:10px 12px;
-      color:var(--ink);
-      width:130px;
-      display:inline-block;
-      text-align:right;
-    }
-    .mutedNote{
-      margin-top:10px; color:var(--muted); font-size:12px; line-height:1.35
-    }
-    .pill{
-      display:inline-block; font-size:11px; color:#bfeee0;
-      border:1px solid rgba(101,230,167,.35);
-      padding:3px 8px; border-radius:999px;
-      background:rgba(101,230,167,.08);
-      margin-left:8px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BK Rest Order Calculator</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#0b1220;
+  color:#e5e7eb;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+}
+h1{margin:0 0 6px 0}
+.sub{opacity:.7;font-size:14px}
+
+.app{
+  width:100%;
+  padding:16px 20px 40px;
+}
+
+.top{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  margin:16px 0 20px;
+}
+.top input{
+  background:#0f172a;
+  border:1px solid #1e293b;
+  color:#fff;
+  padding:10px 12px;
+  border-radius:8px;
+  min-width:180px;
+}
+
+.table{
+  width:100%;
+  overflow-x:auto;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:
+    60px
+    260px
+    120px
+    160px
+    120px
+    160px
+    160px
+    160px;
+  gap:8px;
+  padding:8px 0;
+  border-bottom:1px solid #1e293b;
+}
+.row.header{
+  font-weight:600;
+  opacity:.8;
+}
+.cell input{
+  width:100%;
+  background:#0f172a;
+  border:1px solid #1e293b;
+  color:#fff;
+  padding:6px 8px;
+  border-radius:6px;
+}
+.readonly{
+  background:#064e3b !important;
+  border-color:#065f46 !important;
+}
+
+@media(max-width:1100px){
+  .row{
+    grid-template-columns:
+      60px 220px 110px 140px 110px 140px 140px 140px;
+  }
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <h1>BK Rest Order Calculator</h1>
-    <p class="sub">pro1000 method. No bread/buns. No salad (Eisbergsalat).</p>
+<div class="app">
+  <h1>BK Rest Order Calculator</h1>
+  <div class="sub">pro1000 method</div>
 
-    <div class="top">
-      <div class="field">
-        <label for="planned">Planned Umsatz (€)</label>
-        <input id="planned" type="number" step="1" value="" placeholder="Enter…" />
-      </div>
-      <div class="field">
-        <label for="yesterday">Yesterday Umsatz (€)</label>
-        <input id="yesterday" type="number" step="1" value="" placeholder="Enter…" />
-      </div>
-
-      <div class="btns">
-        <button class="primary" id="saveBtn">Save</button>
-        <button id="loadBtn">Load</button>
-        <button id="resetBtn">Reset Inputs</button>
-        <button id="clearBtn" title="Deletes saved data from this browser">Clear Saved</button>
-      </div>
-    </div>
-
-    <div class="tableWrap">
-      <table>
-        <thead>
-          <tr>
-            <th class="nr">Nr</th>
-            <th class="item">Item</th>
-            <th class="pack">Pack size</th>
-            <th>Yesterday used (units)</th>
-            <th>pro1000</th>
-            <th>Total stock (units)</th>
-            <th>Incoming (packs)</th>
-            <th>Incoming (units)</th>
-            <th>Needed (units)</th>
-            <th>Available (units)</th>
-            <th>To order (packs)</th>
-            <th>Surplus (units)</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
-
-    <div class="mutedNote">
-      <span class="pill">Formula</span>
-      pro1000 = (yesterdayUsed / yesterdayUmsatz) * 1000<br/>
-      needed = plannedUmsatz * pro1000<br/>
-      available = totalStock + (incomingPacks * packSize)<br/>
-      toOrderPacks = max(0, ceil((needed - available) / packSize))<br/>
-      surplus = available - needed
-    </div>
+  <div class="top">
+    <input id="planned" type="number" placeholder="Planned Umsatz (€)">
+    <input id="yesterday" type="number" placeholder="Yesterday Umsatz (€)">
   </div>
 
+  <div class="table">
+    <div class="row header">
+      <div>Nr</div>
+      <div>Item</div>
+      <div>Pack size</div>
+      <div>Yesterday used</div>
+      <div>pro1000</div>
+      <div>Total stock</div>
+      <div>Incoming</div>
+      <div>To order</div>
+    </div>
+
+    <!-- ITEMS -->
+    <div id="rows"></div>
+  </div>
+</div>
+
 <script>
-  // ====== CONFIG (REST items only) ======
-  const ITEMS = [
-    { nr: 43, name: "Long Chicken Patty", pack: 112 },
-    { nr: 50, name: "Whopper Patty",       pack: 132 },
-    { nr: 53, name: "Crispy Chicken Patty",pack: 136 },
-    { nr: 55, name: "Burger Patty",        pack: 312 },
-    { nr: 56, name: "King Wings",          pack: 325 },
-    { nr: 57, name: "King Nuggets",        pack: 568 },
-    { nr: 60, name: "Bacon",               pack: 930 },
-    { nr: 100,name: "Pommes Frites",       pack: 12.5 },
-    { nr: 107,name: "Zwiebelringe",        pack: 630 },
-    { nr: 122,name: "Hot Brownie",         pack: 18 },
-    { nr: 129,name: "Hot Blondie",         pack: 18 },
-    { nr: 606,name: "Chilli Cheese Nuggets", pack: 450 },
-    { nr: 910,name: "Tomaten (kg)",        pack: 5 },
-    { nr: 912,name: "Zwiebeln (kg)",       pack: 20 },
-    { nr: 11577,name:"Mozzarella Sticks",  pack: 204 },
-    { nr: 11816,name:"Chicken Tender Strips", pack: 216 },
-    { nr: 11866,name:"Gitterpommes",       pack: 10 },
-    { nr: 11869,name:"Tortilla Wrap",      pack: 144 },
-    { nr: 11947,name:"PlantBased WH Patty",pack: 100 },
-    { nr: 11973,name:"PlantBased Nuggets", pack: 568 },
-    { nr: 12010,name:"PlantBased HB Patty",pack: 200 },
-    { nr: 12029,name:"PlantBased Long Patty", pack: 112 },
-    { nr: 12061,name:"Premium Crunchy Chicken", pack: 96 },
-    { nr: 12110,name:"Mini Churros",       pack: 500 },
-    { nr: 12180,name:"Falafel Bites",      pack: 249 },
-  ];
+const items = [
+ {nr:43,name:"Long Chicken Patty",pack:112},
+ {nr:50,name:"Whopper Patty",pack:132},
+ {nr:53,name:"Crispy Chicken Patty",pack:136},
+ {nr:55,name:"Burger Patty",pack:312},
+ {nr:56,name:"King Wings",pack:325},
+ {nr:57,name:"King Nuggets",pack:568},
+ {nr:60,name:"Bacon",pack:930},
+ {nr:100,name:"Pommes Frites",pack:12.5},
+ {nr:107,name:"Zwiebelringe",pack:630},
+ {nr:122,name:"Hot Brownie",pack:18},
+ {nr:129,name:"Hot Blondie",pack:18},
+ {nr:606,name:"Chilli Cheese Nuggets",pack:450},
+ {nr:910,name:"Tomaten (kg)",pack:5},
+ {nr:912,name:"Zwiebeln (kg)",pack:20},
+ {nr:11577,name:"Mozzarella Sticks",pack:204},
+ {nr:11816,name:"Chicken Tender Strips",pack:216},
+ {nr:11866,name:"Gitterpommes",pack:10},
+ {nr:11869,name:"Tortilla Wrap",pack:144},
+ {nr:11947,name:"PlantBased WH Patty",pack:100},
+ {nr:11973,name:"PlantBased Nuggets",pack:568},
+ {nr:12010,name:"PlantBased HB Patty",pack:200},
+ {nr:12029,name:"PlantBased Long Patty",pack:112},
+ {nr:12061,name:"Premium Crunchy Chicken",pack:96},
+ {nr:12110,name:"Mini Churros",pack:500},
+ {nr:12180,name:"Falafel Bites",pack:249},
+];
 
-  const KEY = "bk_rest_order_state_v1";
+const rowsEl = document.getElementById("rows");
 
-  const $ = (id)=>document.getElementById(id);
+items.forEach((it,i)=>{
+  rowsEl.insertAdjacentHTML("beforeend",`
+    <div class="row" data-i="${i}">
+      <div>${it.nr}</div>
+      <div>${it.name}</div>
+      <div>${it.pack}</div>
+      <div class="cell"><input type="number" class="used"></div>
+      <div class="cell"><input class="pro readonly" readonly></div>
+      <div class="cell"><input type="number" class="stock"></div>
+      <div class="cell"><input type="number" class="incoming"></div>
+      <div class="cell"><input class="order readonly" readonly></div>
+    </div>
+  `);
+});
 
-  function n(v){
-    const x = parseFloat(v);
-    return Number.isFinite(x) ? x : 0;
-  }
-  function ceilDiv(a,b){
-    if (b === 0) return 0;
-    return Math.ceil(a / b);
-  }
+function calc(){
+  const planned = +document.getElementById("planned").value || 0;
+  const yesterday = +document.getElementById("yesterday").value || 0;
 
-  function build(){
-    const tbody = $("rows");
-    tbody.innerHTML = "";
-    for(const it of ITEMS){
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="nr">${it.nr}</td>
-        <td class="item">${it.name}</td>
-        <td class="pack">${it.pack}</td>
+  document.querySelectorAll(".row[data-i]").forEach(row=>{
+    const used = +row.querySelector(".used").value || 0;
+    const stock = +row.querySelector(".stock").value || 0;
+    const incoming = +row.querySelector(".incoming").value || 0;
+    const pack = +row.children[2].innerText;
 
-        <td class="cellIn"><input type="number" step="any" class="yUsed" data-nr="${it.nr}" value="0"></td>
-        <td><span class="readonly" id="pro_${it.nr}">0</span></td>
+    let pro = yesterday ? (used / yesterday) * 1000 : 0;
+    let needed = planned * pro;
+    let available = stock + incoming;
+    let toOrder = Math.max(0, Math.ceil((needed - available) / pack));
 
-        <td class="cellIn"><input type="number" step="any" class="stock" data-nr="${it.nr}" value="0"></td>
-
-        <td class="cellIn"><input type="number" step="any" class="incP" data-nr="${it.nr}" value="0"></td>
-        <td><span class="readonly" id="incu_${it.nr}">0</span></td>
-
-        <td><span class="readonly" id="need_${it.nr}">0</span></td>
-        <td><span class="readonly" id="avail_${it.nr}">0</span></td>
-        <td><span class="readonly" id="ord_${it.nr}">0</span></td>
-        <td><span class="readonly" id="sur_${it.nr}">0</span></td>
-      `;
-      tbody.appendChild(tr);
-    }
-
-    // listeners
-    document.querySelectorAll("input").forEach(inp=>{
-      inp.addEventListener("input", recalc);
-    });
-
-    recalc();
-  }
-
-  function recalc(){
-    const planned = n($("planned").value);
-    const yesterday = n($("yesterday").value);
-
-    for(const it of ITEMS){
-      const yUsed = n(document.querySelector(`.yUsed[data-nr="${it.nr}"]`).value);
-      const stock = n(document.querySelector(`.stock[data-nr="${it.nr}"]`).value);
-      const incP  = n(document.querySelector(`.incP[data-nr="${it.nr}"]`).value);
-
-      const pro1000 = (yesterday > 0) ? (yUsed / yesterday) * 1000 : 0;
-      const needed  = planned * pro1000;
-      const incUnits = incP * it.pack;
-      const available = stock + incUnits;
-
-      const missing = needed - available;
-      const toOrder = missing > 0 ? ceilDiv(missing, it.pack) : 0;
-      const surplus = available - needed;
-
-      $("pro_"+it.nr).textContent   = pro1000.toFixed(2);
-      $("incu_"+it.nr).textContent  = incUnits.toFixed(2);
-      $("need_"+it.nr).textContent  = needed.toFixed(2);
-      $("avail_"+it.nr).textContent = available.toFixed(2);
-      $("ord_"+it.nr).textContent   = String(toOrder);
-      $("sur_"+it.nr).textContent   = surplus.toFixed(2);
-    }
-  }
-
-  function getState(){
-    const state = {
-      planned: $("planned").value,
-      yesterday: $("yesterday").value,
-      rows: {}
-    };
-    for(const it of ITEMS){
-      state.rows[it.nr] = {
-        yUsed: document.querySelector(`.yUsed[data-nr="${it.nr}"]`).value,
-        stock: document.querySelector(`.stock[data-nr="${it.nr}"]`).value,
-        incP:  document.querySelector(`.incP[data-nr="${it.nr}"]`).value,
-      };
-    }
-    return state;
-  }
-
-  function setState(state){
-    $("planned").value = state?.planned ?? "";
-    $("yesterday").value = state?.yesterday ?? "";
-    for(const it of ITEMS){
-      const r = state?.rows?.[it.nr];
-      if(!r) continue;
-      document.querySelector(`.yUsed[data-nr="${it.nr}"]`).value = r.yUsed ?? 0;
-      document.querySelector(`.stock[data-nr="${it.nr}"]`).value = r.stock ?? 0;
-      document.querySelector(`.incP[data-nr="${it.nr}"]`).value  = r.incP ?? 0;
-    }
-    recalc();
-  }
-
-  // Buttons
-  $("saveBtn").addEventListener("click", ()=>{
-    localStorage.setItem(KEY, JSON.stringify(getState()));
+    row.querySelector(".pro").value = pro.toFixed(2);
+    row.querySelector(".order").value = toOrder;
   });
+}
 
-  $("loadBtn").addEventListener("click", ()=>{
-    const raw = localStorage.getItem(KEY);
-    if(!raw) return;
-    try { setState(JSON.parse(raw)); } catch(e){}
-  });
-
-  $("clearBtn").addEventListener("click", ()=>{
-    localStorage.removeItem(KEY);
-    // do not change current inputs
-  });
-
-  $("resetBtn").addEventListener("click", ()=>{
-    $("planned").value = "";
-    $("yesterday").value = "";
-    for(const it of ITEMS){
-      document.querySelector(`.yUsed[data-nr="${it.nr}"]`).value = 0;
-      document.querySelector(`.stock[data-nr="${it.nr}"]`).value = 0;
-      document.querySelector(`.incP[data-nr="${it.nr}"]`).value  = 0;
-    }
-    recalc();
-  });
-
-  // IMPORTANT: we build only. NO auto-load.
-  build();
+document.addEventListener("input", calc);
 </script>
 </body>
 </html>
