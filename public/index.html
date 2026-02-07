@@ -307,8 +307,8 @@
   }
 
   function resetInputs(){
-    $("planned").value = 55000;
-    $("yesterday").value = 7000;
+    $("planned").value = "";
+    $("yesterday").value = "";
     ITEMS.forEach((_, idx)=>{
       const r = getRow(idx);
       r.yused.value = 0;
