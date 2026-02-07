@@ -6,328 +6,313 @@
   <title>BK Rest Order Calculator</title>
   <style>
     :root{
-      --bg:#0b1020;
-      --card:#111a33;
-      --muted:#8aa0c6;
-      --text:#eaf0ff;
-      --line:rgba(255,255,255,.10);
-      --input:#0c1430;
-      --good:rgba(56, 255, 140, .14);
-      --bad:rgba(255, 80, 80, .14);
+      --bg:#0b1220;
+      --card:#111a2d;
+      --muted:#7f8aa5;
+      --line:#23304b;
+      --ink:#e8eefc;
+      --pill:#0e1730;
+      --accent:#65e6a7;
+      --accent2:#2dd4bf;
     }
-    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    body{margin:0;background:radial-gradient(1100px 600px at 15% 10%, #1a2a55 0%, transparent 60%), var(--bg); color:var(--text)}
-    .wrap{max-width:1100px;margin:18px auto;padding:0 12px}
-    h1{margin:0 0 8px;font-size:28px;letter-spacing:.2px}
-    .sub{margin:0 0 18px;color:var(--muted)}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:radial-gradient(1200px 600px at 20% 10%, #15234a 0%, var(--bg) 50%, #070b14 100%);
+      color:var(--ink);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:22px 14px 40px}
+    h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px}
+    .sub{margin:0 0 16px;color:var(--muted)}
     .top{
-      display:flex;gap:12px;flex-wrap:wrap;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid var(--line); border-radius:14px; padding:12px;
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      background:rgba(17,26,45,.72); border:1px solid var(--line);
+      padding:12px; border-radius:14px; backdrop-filter: blur(8px);
     }
-    .field{display:flex;flex-direction:column;gap:6px}
-    label{font-size:12px;color:var(--muted)}
+    .field{display:flex; flex-direction:column; gap:6px}
+    .field label{font-size:12px;color:var(--muted)}
     input[type="number"]{
-      width:170px; padding:10px 10px; border-radius:10px;
-      border:1px solid var(--line); background:var(--input); color:var(--text);
+      width:160px; max-width:100%;
+      background:var(--pill); color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:10px; padding:10px 12px;
       outline:none;
     }
-    .btns{margin-left:auto;display:flex;gap:8px;align-items:flex-end}
+    input[type="number"]:focus{border-color:#3a4f7a; box-shadow:0 0 0 3px rgba(45,212,191,.15)}
+    .btns{margin-left:auto; display:flex; gap:8px; flex-wrap:wrap}
     button{
-      padding:10px 12px;border-radius:10px;border:1px solid var(--line);
-      background:rgba(255,255,255,.06);color:var(--text);cursor:pointer
+      background:transparent; color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:10px; padding:10px 12px;
+      cursor:pointer;
     }
-    button:hover{background:rgba(255,255,255,.10)}
-    .card{
+    button:hover{border-color:#3a4f7a}
+    button.primary{background:linear-gradient(90deg, rgba(101,230,167,.18), rgba(45,212,191,.18)); border-color:rgba(45,212,191,.45)}
+    .tableWrap{
       margin-top:14px;
-      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-      border:1px solid var(--line); border-radius:14px; overflow:hidden;
+      background:rgba(17,26,45,.72);
+      border:1px solid var(--line);
+      border-radius:14px;
+      overflow:hidden;
     }
-    table{width:100%;border-collapse:separate;border-spacing:0}
+    table{width:100%; border-collapse:collapse}
     thead th{
-      position:sticky; top:0;
-      background:rgba(10,16,32,.88);
-      backdrop-filter: blur(8px);
+      text-align:left; font-size:12px; color:#b8c4df;
+      background:rgba(10,16,28,.65);
+      padding:10px 10px;
       border-bottom:1px solid var(--line);
-      color:var(--muted); font-weight:600; font-size:12px;
-      padding:10px 8px; text-align:left;
       white-space:nowrap;
     }
     tbody td{
-      border-bottom:1px solid rgba(255,255,255,.06);
-      padding:8px;
+      padding:10px 10px;
+      border-bottom:1px solid rgba(35,48,75,.6);
       vertical-align:middle;
-      background:rgba(255,255,255,.02);
     }
-    tbody tr:hover td{background:rgba(255,255,255,.03)}
-    .num{width:110px}
-    .small{width:78px}
-    .wide{min-width:180px}
-    .cell{
-      width:100%; padding:9px 8px; border-radius:10px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      outline:none;
+    tbody tr:last-child td{border-bottom:none}
+    .nr{width:56px;color:#c9d4ef}
+    .item{min-width:210px}
+    .pack{width:110px}
+    .cellIn input{width:120px}
+    .readonly{
+      background:rgba(101,230,167,.12);
+      border:1px solid rgba(101,230,167,.35);
+      border-radius:10px;
+      padding:10px 12px;
+      color:var(--ink);
+      width:130px;
+      display:inline-block;
+      text-align:right;
     }
-    .cell[readonly]{opacity:.85}
-    .good{background:var(--good)!important;border-color:rgba(56,255,140,.25)!important}
-    .bad{background:var(--bad)!important;border-color:rgba(255,80,80,.25)!important}
-    .check{display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--muted);font-size:12px}
-    .foot{padding:10px 12px;color:var(--muted);font-size:12px}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .mutedNote{
+      margin-top:10px; color:var(--muted); font-size:12px; line-height:1.35
+    }
+    .pill{
+      display:inline-block; font-size:11px; color:#bfeee0;
+      border:1px solid rgba(101,230,167,.35);
+      padding:3px 8px; border-radius:999px;
+      background:rgba(101,230,167,.08);
+      margin-left:8px;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <h1>BK Rest Order Calculator</h1>
-    <p class="sub">pro1000 method. <b>No bread/buns. No salad (Eisbergsalat)</b>.</p>
+    <p class="sub">pro1000 method. No bread/buns. No salad (Eisbergsalat).</p>
 
     <div class="top">
       <div class="field">
-        <label>Planned Umsatz (€)</label>
-        <input id="planned" type="number" step="1" value="55000" />
+        <label for="planned">Planned Umsatz (€)</label>
+        <input id="planned" type="number" step="1" value="" placeholder="Enter…" />
       </div>
       <div class="field">
-        <label>Yesterday Umsatz (€)</label>
-        <input id="yesterday" type="number" step="1" value="7000" />
+        <label for="yesterday">Yesterday Umsatz (€)</label>
+        <input id="yesterday" type="number" step="1" value="" placeholder="Enter…" />
       </div>
+
       <div class="btns">
-        <button id="save">Save</button>
-        <button id="load">Load</button>
-        <button id="reset">Reset Inputs</button>
+        <button class="primary" id="saveBtn">Save</button>
+        <button id="loadBtn">Load</button>
+        <button id="resetBtn">Reset Inputs</button>
+        <button id="clearBtn" title="Deletes saved data from this browser">Clear Saved</button>
       </div>
     </div>
 
-    <div class="card">
-      <table id="tbl">
+    <div class="tableWrap">
+      <table>
         <thead>
           <tr>
-            <th class="small">Nr</th>
-            <th class="wide">Item</th>
-            <th class="small">Pack size</th>
-            <th class="num">Yesterday used (units)</th>
-            <th class="num">pro1000</th>
-            <th class="num">Total stock (units)</th>
-            <th class="num">Not for order (units)</th>
-            <th class="num">Incoming 1 (packs)</th>
-            <th class="small">Inc1</th>
-            <th class="num">Incoming 2 (packs)</th>
-            <th class="small">Inc2</th>
-            <th class="num">Needed (units)</th>
-            <th class="num">Available (units)</th>
-            <th class="num">To order (packs)</th>
-            <th class="num">Surplus (packs)</th>
+            <th class="nr">Nr</th>
+            <th class="item">Item</th>
+            <th class="pack">Pack size</th>
+            <th>Yesterday used (units)</th>
+            <th>pro1000</th>
+            <th>Total stock (units)</th>
+            <th>Incoming (packs)</th>
+            <th>Incoming (units)</th>
+            <th>Needed (units)</th>
+            <th>Available (units)</th>
+            <th>To order (packs)</th>
+            <th>Surplus (units)</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="rows"></tbody>
       </table>
-      <div class="foot">
-        <span class="mono">pro1000 = (yesterdayUsed / yesterdayUmsatz) * 1000</span> ·
-        <span class="mono">needed = plannedUmsatz * pro1000</span> ·
-        <span class="mono">available = totalStock - notForOrder + (inc1*packSize*inc1on) + (inc2*packSize*inc2on)</span>
-      </div>
+    </div>
+
+    <div class="mutedNote">
+      <span class="pill">Formula</span>
+      pro1000 = (yesterdayUsed / yesterdayUmsatz) * 1000<br/>
+      needed = plannedUmsatz * pro1000<br/>
+      available = totalStock + (incomingPacks * packSize)<br/>
+      toOrderPacks = max(0, ceil((needed - available) / packSize))<br/>
+      surplus = available - needed
     </div>
   </div>
 
 <script>
-  // REST ORDER ITEMS (NO buns/bread, NO Eisbergsalat)
+  // ====== CONFIG (REST items only) ======
   const ITEMS = [
-    {nr:43,  name:"Long Chicken Patty", pack:112},
-    {nr:50,  name:"Whopper Patty", pack:132},
-    {nr:53,  name:"Crispy Chicken Patty", pack:136},
-    {nr:55,  name:"Burger Patty", pack:312},
-    {nr:56,  name:"King Wings", pack:325},
-    {nr:57,  name:"King Nuggets", pack:568},
-    {nr:60,  name:"Bacon", pack:930},
-    {nr:100, name:"Pommes Frites", pack:12.5},
-    {nr:107, name:"Zwiebelringe", pack:630},
-    {nr:122, name:"Hot Brownie", pack:18},
-    {nr:129, name:"Hot Blondie", pack:18},
-    {nr:606, name:"Chilli Cheese Nuggets", pack:450},
-    {nr:910, name:"Tomaten (kg)", pack:5},
-    {nr:912, name:"Zwiebeln (kg)", pack:20},
-    {nr:11577,name:"Mozzarella Sticks", pack:204},
-    {nr:11816,name:"Chicken Tender Strips", pack:216},
-    {nr:11866,name:"Gitterpommes", pack:10},
-    {nr:11869,name:"Tortilla Wrap", pack:144},
-    {nr:11947,name:"PlantBased WH Patty", pack:100},
-    {nr:11973,name:"PlantBased Nuggets", pack:568},
-    {nr:12010,name:"PlantBased HB Patty", pack:200},
-    {nr:12029,name:"PlantBased Long Patty", pack:112},
-    {nr:12061,name:"Premium Crunchy Chicken", pack:96},
-    {nr:12110,name:"Mini Churros", pack:500},
-    {nr:12180,name:"Falafel Bites", pack:249}
+    { nr: 43, name: "Long Chicken Patty", pack: 112 },
+    { nr: 50, name: "Whopper Patty",       pack: 132 },
+    { nr: 53, name: "Crispy Chicken Patty",pack: 136 },
+    { nr: 55, name: "Burger Patty",        pack: 312 },
+    { nr: 56, name: "King Wings",          pack: 325 },
+    { nr: 57, name: "King Nuggets",        pack: 568 },
+    { nr: 60, name: "Bacon",               pack: 930 },
+    { nr: 100,name: "Pommes Frites",       pack: 12.5 },
+    { nr: 107,name: "Zwiebelringe",        pack: 630 },
+    { nr: 122,name: "Hot Brownie",         pack: 18 },
+    { nr: 129,name: "Hot Blondie",         pack: 18 },
+    { nr: 606,name: "Chilli Cheese Nuggets", pack: 450 },
+    { nr: 910,name: "Tomaten (kg)",        pack: 5 },
+    { nr: 912,name: "Zwiebeln (kg)",       pack: 20 },
+    { nr: 11577,name:"Mozzarella Sticks",  pack: 204 },
+    { nr: 11816,name:"Chicken Tender Strips", pack: 216 },
+    { nr: 11866,name:"Gitterpommes",       pack: 10 },
+    { nr: 11869,name:"Tortilla Wrap",      pack: 144 },
+    { nr: 11947,name:"PlantBased WH Patty",pack: 100 },
+    { nr: 11973,name:"PlantBased Nuggets", pack: 568 },
+    { nr: 12010,name:"PlantBased HB Patty",pack: 200 },
+    { nr: 12029,name:"PlantBased Long Patty", pack: 112 },
+    { nr: 12061,name:"Premium Crunchy Chicken", pack: 96 },
+    { nr: 12110,name:"Mini Churros",       pack: 500 },
+    { nr: 12180,name:"Falafel Bites",      pack: 249 },
   ];
 
-  const $ = (id)=>document.getElementById(id);
-  const tbody = document.querySelector("#tbl tbody");
+  const KEY = "bk_rest_order_state_v1";
 
-  function n(v){ return Number.isFinite(v) ? v : 0; }
-  function r2(v){ return Math.round(v*100)/100; }
+  const $ = (id)=>document.getElementById(id);
+
+  function n(v){
+    const x = parseFloat(v);
+    return Number.isFinite(x) ? x : 0;
+  }
+  function ceilDiv(a,b){
+    if (b === 0) return 0;
+    return Math.ceil(a / b);
+  }
 
   function build(){
+    const tbody = $("rows");
     tbody.innerHTML = "";
-    ITEMS.forEach((it, idx)=>{
+    for(const it of ITEMS){
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td class="small">${it.nr}</td>
-        <td class="wide">${it.name}</td>
-        <td class="small"><input class="cell" data-k="pack" data-i="${idx}" type="number" step="0.01" value="${it.pack}"></td>
+        <td class="nr">${it.nr}</td>
+        <td class="item">${it.name}</td>
+        <td class="pack">${it.pack}</td>
 
-        <td class="num"><input class="cell" data-k="yused" data-i="${idx}" type="number" step="0.0001" value="0"></td>
-        <td class="num"><input class="cell" data-k="p1000" data-i="${idx}" type="number" step="0.0001" value="0" readonly></td>
+        <td class="cellIn"><input type="number" step="any" class="yUsed" data-nr="${it.nr}" value="0"></td>
+        <td><span class="readonly" id="pro_${it.nr}">0</span></td>
 
-        <td class="num"><input class="cell good" data-k="stock" data-i="${idx}" type="number" step="0.0001" value="0"></td>
-        <td class="num"><input class="cell" data-k="notfor" data-i="${idx}" type="number" step="0.0001" value="0"></td>
+        <td class="cellIn"><input type="number" step="any" class="stock" data-nr="${it.nr}" value="0"></td>
 
-        <td class="num"><input class="cell" data-k="inc1" data-i="${idx}" type="number" step="0.01" value="0"></td>
-        <td class="small">
-          <label class="check"><input data-k="inc1on" data-i="${idx}" type="checkbox" checked>1</label>
-        </td>
-        <td class="num"><input class="cell" data-k="inc2" data-i="${idx}" type="number" step="0.01" value="0"></td>
-        <td class="small">
-          <label class="check"><input data-k="inc2on" data-i="${idx}" type="checkbox">1</label>
-        </td>
+        <td class="cellIn"><input type="number" step="any" class="incP" data-nr="${it.nr}" value="0"></td>
+        <td><span class="readonly" id="incu_${it.nr}">0</span></td>
 
-        <td class="num"><input class="cell" data-k="need" data-i="${idx}" type="number" step="0.0001" value="0" readonly></td>
-        <td class="num"><input class="cell" data-k="avail" data-i="${idx}" type="number" step="0.0001" value="0" readonly></td>
-
-        <td class="num"><input class="cell bad" data-k="order" data-i="${idx}" type="number" step="1" value="0" readonly></td>
-        <td class="num"><input class="cell good" data-k="surplus" data-i="${idx}" type="number" step="1" value="0" readonly></td>
+        <td><span class="readonly" id="need_${it.nr}">0</span></td>
+        <td><span class="readonly" id="avail_${it.nr}">0</span></td>
+        <td><span class="readonly" id="ord_${it.nr}">0</span></td>
+        <td><span class="readonly" id="sur_${it.nr}">0</span></td>
       `;
       tbody.appendChild(tr);
-    });
+    }
 
+    // listeners
     document.querySelectorAll("input").forEach(inp=>{
-      inp.addEventListener("input", calcAll);
-      inp.addEventListener("change", calcAll);
+      inp.addEventListener("input", recalc);
     });
 
-    calcAll();
+    recalc();
   }
 
-  function getRow(idx){
-    const get = (k) => document.querySelector(`[data-k="${k}"][data-i="${idx}"]`);
-    return {
-      pack: get("pack"),
-      yused: get("yused"),
-      p1000: get("p1000"),
-      stock: get("stock"),
-      notfor: get("notfor"),
-      inc1: get("inc1"),
-      inc1on: get("inc1on"),
-      inc2: get("inc2"),
-      inc2on: get("inc2on"),
-      need: get("need"),
-      avail: get("avail"),
-      order: get("order"),
-      surplus: get("surplus")
-    };
+  function recalc(){
+    const planned = n($("planned").value);
+    const yesterday = n($("yesterday").value);
+
+    for(const it of ITEMS){
+      const yUsed = n(document.querySelector(`.yUsed[data-nr="${it.nr}"]`).value);
+      const stock = n(document.querySelector(`.stock[data-nr="${it.nr}"]`).value);
+      const incP  = n(document.querySelector(`.incP[data-nr="${it.nr}"]`).value);
+
+      const pro1000 = (yesterday > 0) ? (yUsed / yesterday) * 1000 : 0;
+      const needed  = planned * pro1000;
+      const incUnits = incP * it.pack;
+      const available = stock + incUnits;
+
+      const missing = needed - available;
+      const toOrder = missing > 0 ? ceilDiv(missing, it.pack) : 0;
+      const surplus = available - needed;
+
+      $("pro_"+it.nr).textContent   = pro1000.toFixed(2);
+      $("incu_"+it.nr).textContent  = incUnits.toFixed(2);
+      $("need_"+it.nr).textContent  = needed.toFixed(2);
+      $("avail_"+it.nr).textContent = available.toFixed(2);
+      $("ord_"+it.nr).textContent   = String(toOrder);
+      $("sur_"+it.nr).textContent   = surplus.toFixed(2);
+    }
   }
 
-  function calcAll(){
-    const planned = n(parseFloat($("planned").value));
-    const yums = n(parseFloat($("yesterday").value));
-
-    ITEMS.forEach((_, idx)=>{
-      const row = getRow(idx);
-      const pack = n(parseFloat(row.pack.value));
-      const yused = n(parseFloat(row.yused.value));
-      const stock = n(parseFloat(row.stock.value));
-      const notfor = n(parseFloat(row.notfor.value));
-
-      const p1000 = (yums > 0) ? (yused / yums) * 1000 : 0;
-      const neededUnits = planned * p1000;
-
-      const inc1packs = n(parseFloat(row.inc1.value));
-      const inc2packs = n(parseFloat(row.inc2.value));
-      const inc1on = row.inc1on.checked ? 1 : 0;
-      const inc2on = row.inc2on.checked ? 1 : 0;
-
-      const incomingUnits = (inc1packs * pack * inc1on) + (inc2packs * pack * inc2on);
-      const availableUnits = stock - notfor + incomingUnits;
-
-      const deficitUnits = Math.max(0, neededUnits - availableUnits);
-      const toOrderPacks = (pack > 0) ? Math.ceil(deficitUnits / pack) : 0;
-
-      const surplusUnits = Math.max(0, availableUnits - neededUnits);
-      const surplusPacks = (pack > 0) ? Math.floor(surplusUnits / pack) : 0;
-
-      row.p1000.value = r2(p1000);
-      row.need.value = r2(neededUnits);
-      row.avail.value = r2(availableUnits);
-      row.order.value = toOrderPacks;
-      row.surplus.value = surplusPacks;
-    });
-  }
-
-  function saveState(){
+  function getState(){
     const state = {
       planned: $("planned").value,
       yesterday: $("yesterday").value,
-      rows: ITEMS.map((_, idx)=>{
-        const r = getRow(idx);
-        return {
-          pack: r.pack.value,
-          yused: r.yused.value,
-          stock: r.stock.value,
-          notfor: r.notfor.value,
-          inc1: r.inc1.value,
-          inc1on: r.inc1on.checked,
-          inc2: r.inc2.value,
-          inc2on: r.inc2on.checked
-        };
-      })
+      rows: {}
     };
-    localStorage.setItem("bk_rest_order_calc_v2", JSON.stringify(state));
+    for(const it of ITEMS){
+      state.rows[it.nr] = {
+        yUsed: document.querySelector(`.yUsed[data-nr="${it.nr}"]`).value,
+        stock: document.querySelector(`.stock[data-nr="${it.nr}"]`).value,
+        incP:  document.querySelector(`.incP[data-nr="${it.nr}"]`).value,
+      };
+    }
+    return state;
   }
 
-  function loadState(){
-    const raw = localStorage.getItem("bk_rest_order_calc_v2");
+  function setState(state){
+    $("planned").value = state?.planned ?? "";
+    $("yesterday").value = state?.yesterday ?? "";
+    for(const it of ITEMS){
+      const r = state?.rows?.[it.nr];
+      if(!r) continue;
+      document.querySelector(`.yUsed[data-nr="${it.nr}"]`).value = r.yUsed ?? 0;
+      document.querySelector(`.stock[data-nr="${it.nr}"]`).value = r.stock ?? 0;
+      document.querySelector(`.incP[data-nr="${it.nr}"]`).value  = r.incP ?? 0;
+    }
+    recalc();
+  }
+
+  // Buttons
+  $("saveBtn").addEventListener("click", ()=>{
+    localStorage.setItem(KEY, JSON.stringify(getState()));
+  });
+
+  $("loadBtn").addEventListener("click", ()=>{
+    const raw = localStorage.getItem(KEY);
     if(!raw) return;
-    const s = JSON.parse(raw);
-    $("planned").value = s.planned ?? $("planned").value;
-    $("yesterday").value = s.yesterday ?? $("yesterday").value;
+    try { setState(JSON.parse(raw)); } catch(e){}
+  });
 
-    (s.rows || []).forEach((v, idx)=>{
-      const r = getRow(idx);
-      if(!r) return;
-      r.pack.value = v.pack ?? r.pack.value;
-      r.yused.value = v.yused ?? r.yused.value;
-      r.stock.value = v.stock ?? r.stock.value;
-      r.notfor.value = v.notfor ?? r.notfor.value;
-      r.inc1.value = v.inc1 ?? r.inc1.value;
-      r.inc1on.checked = !!v.inc1on;
-      r.inc2.value = v.inc2 ?? r.inc2.value;
-      r.inc2on.checked = !!v.inc2on;
-    });
+  $("clearBtn").addEventListener("click", ()=>{
+    localStorage.removeItem(KEY);
+    // do not change current inputs
+  });
 
-    calcAll();
-  }
-
-  function resetInputs(){
+  $("resetBtn").addEventListener("click", ()=>{
     $("planned").value = "";
     $("yesterday").value = "";
-    ITEMS.forEach((_, idx)=>{
-      const r = getRow(idx);
-      r.yused.value = 0;
-      r.stock.value = 0;
-      r.notfor.value = 0;
-      r.inc1.value = 0;
-      r.inc1on.checked = true;
-      r.inc2.value = 0;
-      r.inc2on.checked = false;
-    });
-    calcAll();
-  }
+    for(const it of ITEMS){
+      document.querySelector(`.yUsed[data-nr="${it.nr}"]`).value = 0;
+      document.querySelector(`.stock[data-nr="${it.nr}"]`).value = 0;
+      document.querySelector(`.incP[data-nr="${it.nr}"]`).value  = 0;
+    }
+    recalc();
+  });
 
-  $("save").addEventListener("click", saveState);
-  $("load").addEventListener("click", loadState);
-  $("reset").addEventListener("click", resetInputs);
-
+  // IMPORTANT: we build only. NO auto-load.
   build();
-  loadState();
 </script>
 </body>
 </html>
