@@ -11,10 +11,9 @@
       --muted:#8aa0c6;
       --text:#eaf0ff;
       --line:rgba(255,255,255,.10);
-      --cell:rgba(255,255,255,.06);
+      --input:#0c1430;
       --good:rgba(56, 255, 140, .14);
       --bad:rgba(255, 80, 80, .14);
-      --input:#0c1430;
     }
     *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
     body{margin:0;background:radial-gradient(1100px 600px at 15% 10%, #1a2a55 0%, transparent 60%), var(--bg); color:var(--text)}
@@ -74,9 +73,7 @@
     .cell[readonly]{opacity:.85}
     .good{background:var(--good)!important;border-color:rgba(56,255,140,.25)!important}
     .bad{background:var(--bad)!important;border-color:rgba(255,80,80,.25)!important}
-    .check{
-      display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--muted);font-size:12px
-    }
+    .check{display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--muted);font-size:12px}
     .foot{padding:10px 12px;color:var(--muted);font-size:12px}
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
   </style>
@@ -84,7 +81,7 @@
 <body>
   <div class="wrap">
     <h1>BK Rest Order Calculator</h1>
-    <p class="sub">pro1000 method. No bread/salad here.</p>
+    <p class="sub">pro1000 method. <b>No bread/buns. No salad (Eisbergsalat)</b>.</p>
 
     <div class="top">
       <div class="field">
@@ -126,7 +123,7 @@
         <tbody></tbody>
       </table>
       <div class="foot">
-        Formula: <span class="mono">pro1000 = (yesterdayUsed / yesterdayUmsatz) * 1000</span> ·
+        <span class="mono">pro1000 = (yesterdayUsed / yesterdayUmsatz) * 1000</span> ·
         <span class="mono">needed = plannedUmsatz * pro1000</span> ·
         <span class="mono">available = totalStock - notForOrder + (inc1*packSize*inc1on) + (inc2*packSize*inc2on)</span>
       </div>
@@ -134,13 +131,8 @@
   </div>
 
 <script>
-  // REST items list (from your Tägliche Inventur sheet) — excluding bread/salad ordering app
-  // Bread/salad are NOT removed here because this calculator is "rest order".
-  // If you want to exclude buns too, tell me and I’ll toggle them off.
+  // REST ORDER ITEMS (NO buns/bread, NO Eisbergsalat)
   const ITEMS = [
-    {nr:10,  name:"Whopper BUN", pack:20},
-    {nr:20,  name:"Burger BUN", pack:60},
-    {nr:39,  name:"Long BUN", pack:48},
     {nr:43,  name:"Long Chicken Patty", pack:112},
     {nr:50,  name:"Whopper Patty", pack:132},
     {nr:53,  name:"Crispy Chicken Patty", pack:136},
@@ -155,17 +147,14 @@
     {nr:606, name:"Chilli Cheese Nuggets", pack:450},
     {nr:910, name:"Tomaten (kg)", pack:5},
     {nr:912, name:"Zwiebeln (kg)", pack:20},
-    {nr:916, name:"Eisbergsalat (kg)", pack:6},
     {nr:11577,name:"Mozzarella Sticks", pack:204},
     {nr:11816,name:"Chicken Tender Strips", pack:216},
     {nr:11866,name:"Gitterpommes", pack:10},
     {nr:11869,name:"Tortilla Wrap", pack:144},
-    {nr:11900,name:"Potato Bun", pack:48},
     {nr:11947,name:"PlantBased WH Patty", pack:100},
     {nr:11973,name:"PlantBased Nuggets", pack:568},
     {nr:12010,name:"PlantBased HB Patty", pack:200},
     {nr:12029,name:"PlantBased Long Patty", pack:112},
-    {nr:12055,name:"Brioche BUN", pack:30},
     {nr:12061,name:"Premium Crunchy Chicken", pack:96},
     {nr:12110,name:"Mini Churros", pack:500},
     {nr:12180,name:"Falafel Bites", pack:249}
@@ -291,11 +280,11 @@
         };
       })
     };
-    localStorage.setItem("bk_rest_order_calc", JSON.stringify(state));
+    localStorage.setItem("bk_rest_order_calc_v2", JSON.stringify(state));
   }
 
   function loadState(){
-    const raw = localStorage.getItem("bk_rest_order_calc");
+    const raw = localStorage.getItem("bk_rest_order_calc_v2");
     if(!raw) return;
     const s = JSON.parse(raw);
     $("planned").value = s.planned ?? $("planned").value;
